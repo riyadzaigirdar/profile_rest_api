@@ -1,8 +1,12 @@
-
+from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from .serializers import HelloSerializer
+from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
+from profile_app.permissions import UserProfilePermission 
+from .serializers import HelloSerializer,UserProfileSerializer
+from .models import UserProfile
 
 class HelloApiView(APIView):
 
@@ -36,4 +40,16 @@ class HelloApiView(APIView):
 
     def delete(self, request, pk=None):
         return Response({'message': 'delete'})
-                 
+
+
+                
+class UserViewSet(viewsets.ModelViewSet):
+
+    serializer_class = UserProfileSerializer
+    queryset = UserProfile.objects.all()
+    authentication_classes = [TokenAuthentication]   
+    permission_classes = [UserProfilePermission]
+    
+        
+   
+
