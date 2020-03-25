@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile
+from .models import UserProfile,profileFeed
 
 
 class HelloSerializer(serializers.Serializer):
@@ -27,3 +27,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+class ProfileFeedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = profileFeed
+        fields = '__all__'
+        extra_kwargs = {
+            'user_profile':{
+                'read_only':True
+            }
+        }

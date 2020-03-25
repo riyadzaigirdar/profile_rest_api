@@ -7,9 +7,10 @@ from rest_framework.filters import SearchFilter
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
-from profile_app.permissions import UserProfilePermission 
-from .serializers import HelloSerializer,UserProfileSerializer
-from .models import UserProfile
+from profile_app.permissions import UserProfilePermission,ProfileFeedPermission
+from rest_framework.permissions import IsAuthenticated
+from .serializers import HelloSerializer,UserProfileSerializer,ProfileFeedSerializer
+from .models import UserProfile,profileFeed
 
 class HelloApiView(APIView):
 
@@ -57,6 +58,15 @@ class UserViewSet(viewsets.ModelViewSet):
     
 class UserLoginApi(ObtainAuthToken):
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+class UserProfileFeedViewset(viewsets.ModelViewSet):
+    serializer_class = ProfileFeedSerializer
+    queryset = profileFeed.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [ProfileFeedPermission,IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user_profile=self.request.user)
 
    
 
